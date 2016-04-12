@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int cmpfunc(const void *va, const void *vb){
+	const int *ia = va;
+	const int *ib = vb;
+
+	if (*ia < *ib) return -1;
+	else if (*ia > *ib) return +1;
+	else return 0;
+}
+
+int main(){
+	int n,m,i,j;
+	int* num = (int*) malloc(sizeof(int) * 1000);
+	int* sum = (int*) malloc(sizeof(int) * 499500);
+	int temp[50];
+	int cases=1;
+	int s,e, mid,x, y;
+
+	while(scanf("%d",&n) && n){
+		for(i=0;i<n;i++)
+			scanf("%d",&num[i]);
+
+		scanf("%d",&m);
+
+
+		for(i=0;i<m;i++)
+			scanf("%d",&temp[i]);
+
+
+
+
+		x=0;
+
+		for(i=0;i<n-1;i++)
+			for(j=i+1;j<n;j++){
+				if(num[i] != num[j]){
+					sum[x] = num[i]+num[j];
+					x++;
+				}
+			}
+
+		qsort(sum, x, sizeof (int), cmpfunc);
+
+		printf("Case %d:\n",cases);
+		cases++;
+
+		for(i=0;i<m;i++){
+			s=0;
+			e=x-1;
+			while(s < e){
+				mid = (s+e)/2;
+
+				if(temp[i] == sum[mid]){
+					y=sum[mid];
+					break;
+				}else if(temp[i] < sum[mid]){
+					e=mid-1;
+				}else{
+					s = mid+1;
+				}
+			}
+			if(s >= e){
+				if(s == 0)
+					printf("Closest sum to %d is %d.\n", temp[i], sum[0]);
+				else if(s == x-1)
+					printf("Closest sum to %d is %d.\n", temp[i], sum[x-1]);
+				else{
+					if(temp[i] > sum[s]){
+						if(temp[i] - sum[s] < sum[s+1] -temp[i])
+							printf("Closest sum to %d is %d.\n", temp[i], sum[s]);
+						else
+							printf("Closest sum to %d is %d.\n", temp[i], sum[s+1]);
+					}else{
+						if(temp[i] - sum[s-1] < sum[s] -temp[i])
+							printf("Closest sum to %d is %d.\n", temp[i], sum[s-1]);
+						else
+							printf("Closest sum to %d is %d.\n", temp[i], sum[s]);
+					}
+				}
+			}else
+				printf("Closest sum to %d is %d.\n", temp[i], y);
+		}
+	}
+	return 0;
+}
